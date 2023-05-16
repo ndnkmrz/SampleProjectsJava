@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/SampleProjectsJava.iml" filepath="$PROJECT_DIR$/.idea/SampleProjectsJava.iml" />
       <module fileurl="file://$PROJECT_DIR$/kcal.tracker/kcal.tracker.iml" filepath="$PROJECT_DIR$/kcal.tracker/kcal.tracker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/task.tracker/task.tracker.iml" filepath="$PROJECT_DIR$/task.tracker/task.tracker.iml" />
     </modules>
   </component>
 </project>
