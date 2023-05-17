@@ -1,67 +1,56 @@
 public class Task {
-    private String taskTitle;
-    private String taskDescription;
-    private String[] taskStatusList = {"NEW", "IN_PROGRESS", "DONE"};
-    private Integer taskID;
-    private String taskStatus;
+    private String name;
+    private String description;
+    private int id;
+    private Status state;
+    //public static final String[] STATUS = {"NEW", "IN_PROGRESS", "DONE"};
+    public enum Status {
+        NEW,
+        IN_PROGRESS,
+        DONE
+    }
 
-    public Task(String taskTitle, String taskDescription, Integer taskID) {
-        this.taskTitle = taskTitle;
-        this.taskDescription = taskDescription;
-        this.taskID = taskID;
+    public Task(String name, String description, Status state) {
+        this.name = name;
+        this.description = description;
+        this.state = state;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+
+    public Status getState() {
+        return state;
+    }
+
+    public void setState(Status state) {
+        this.state = state;
     }
 
     @Override
-    public String toString() {
-        return "Task{" +
-                "taskTitle='" + taskTitle + '\'' +
-                ", taskDescription='" + taskDescription + '\'' +
-                ", taskStatus='" + taskStatus + '\'' +
-                ", taskID=" + taskID +
-                '}';
-    }
-
-    public Task() {
-    }
-
-    public Task(String taskTitle, String taskDescription, String taskStatus, Integer taskID) {
-        this.taskTitle = taskTitle;
-        this.taskDescription = taskDescription;
-        this.taskStatus = taskStatus;
-        this.taskID = taskID;
-    }
-
-    public Integer getTaskID() {
-        return taskID;
-    }
-
-    public String[] getTaskStatusList() {
-        return taskStatusList;
-    }
-
-    public String getTaskTitle() {
-        return taskTitle;
-    }
-
-    public String getTaskDescription() {
-        return taskDescription;
-    }
-
-
-    public String getTaskStatus() {
-        return taskStatus;
-    }
-
-    public void setTaskTitle(String taskTitle) {
-        this.taskTitle = taskTitle;
-    }
-
-    public void setTaskDescription(String taskDescription) {
-        this.taskDescription = taskDescription;
-    }
-
-
-    public void setTaskStatus(String taskStatus) {
-        this.taskStatus = taskStatus;
+    public String toString(){
+        return id + ": " + name + " — " + state.name();
     }
 }
