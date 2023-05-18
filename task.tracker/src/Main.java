@@ -30,13 +30,10 @@ public class Main {
         manager.printAllTasks();
         manager.delete("Task", task1.getId());
         manager.delete("EpicTask", epic2.getId());
+        manager.getById(2);
         manager.printAllTasks();
         manager.deleteAllTasks("Task");
         manager.printAllTasks();
-        ArrayList<Task> history = (ArrayList<Task>) manager.getHistory();
-        System.out.println("HISTORY: ");
-        for (Task task: history) {
-            System.out.println(task);
-        }
+        manager.showHistory();
     }
 }

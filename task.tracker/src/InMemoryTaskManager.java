@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,7 +36,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
     @Override
-    public Task getById(String className, int id){
+    public Task getById(int id){
         Task task = null;
         if(epicTasks.containsKey(id)){
             task = epicTasks.get(id);
@@ -52,8 +53,12 @@ public class InMemoryTaskManager implements TaskManager {
     }
     @Override
     public Task create(Task task){
-        task.setId(counter);
-        counter++;
+        if(task.getId() == 0) {
+            task.setId(counter);
+            counter++;
+        } else{
+            counter = task.getId() + 1;
+        }
         switch (task.getClass().getName()) {
             case "EpicTask" -> {
                 epicTasks.put(task.getId(), (EpicTask) task);
@@ -106,7 +111,7 @@ public class InMemoryTaskManager implements TaskManager {
                 System.out.println("Task deleted");
             }
             case "SubTask" -> {
-                SubTask task = (SubTask) getById("SubTask",id);
+                SubTask task = (SubTask) getById(id);
                 subTasks.remove(id);
                 System.out.println("Subtask deleted");
                 if(task != null) {
@@ -141,6 +146,14 @@ public class InMemoryTaskManager implements TaskManager {
         return taskList.getTasks();
     }
     @Override
+    public void showHistory(){
+        ArrayList<Task> history = (ArrayList<Task>) getHistory();
+        System.out.println("HISTORY: ");
+        for (Task task: history) {
+            System.out.println(task);
+        }
+    }
+    @Override
     public void add(Task task){
         if(task == null){
             return;
@@ -159,7 +172,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
     public void checkEpicState(int id){
-        EpicTask epic = (EpicTask) getById("EpicTask", id);
+        EpicTask epic = epicTasks.get(id);
         if(epic == null){
             return;
         }
@@ -204,7 +217,7 @@ public class InMemoryTaskManager implements TaskManager {
                 return result;
             }
             Node<T> checkHead = head;
-            for(int i = 0; i < size; i++){
+            while(checkHead != null){
                 result.add(checkHead.data);
                 checkHead = checkHead.next;
             }
