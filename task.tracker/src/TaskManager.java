@@ -1,6 +1,6 @@
 import java.util.List;
 
-public interface TaskManager {
+public interface TaskManager extends HistoryManager {
     List<Task> getAllTasks(String className);
     void deleteAllTasks(String className);
     Task getById(String className, int id);
@@ -9,6 +9,5 @@ public interface TaskManager {
     void delete(String className, int id);
     List<SubTask> getAllSubTasks(int epicId);
     void printAllTasks();
-    List<Task> history();
 
 }

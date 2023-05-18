@@ -33,7 +33,8 @@ public class Main {
         manager.printAllTasks();
         manager.deleteAllTasks("Task");
         manager.printAllTasks();
-        ArrayList<Task> history = (ArrayList<Task>) manager.history();
+        ArrayList<Task> history = (ArrayList<Task>) manager.getHistory();
+        System.out.println("HISTORY: ");
         for (Task task: history) {
             System.out.println(task);
         }

@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
@@ -7,7 +8,8 @@ public class InMemoryTaskManager implements TaskManager {
     public static HashMap<Integer, Task> tasks = new HashMap<>();
     public static HashMap<Integer, SubTask> subTasks = new HashMap<>();
     public static HashMap<Integer, EpicTask> epicTasks = new HashMap<>();
-    public static ArrayList<Integer> historyOfViews = new ArrayList<>();
+    public static HashMap<Integer, Node<Task>> historyOfViews = new HashMap<>();
+    public static LinkedTaskList<Task> taskList = new LinkedTaskList<Task>();
 
     @Override
     public ArrayList<Task> getAllTasks(String className){
@@ -45,7 +47,7 @@ public class InMemoryTaskManager implements TaskManager {
         if(historyOfViews.size() == 10){
             historyOfViews.remove(0);
         }
-        historyOfViews.add(id);
+        add(task);
         return task;
     }
     @Override
@@ -89,6 +91,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
     @Override
     public void delete(String className, int id){
+        remove(id);
         switch (className) {
             case "EpicTask" -> {
                 epicTasks.remove(id);
@@ -134,18 +137,26 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
     @Override
-    public ArrayList<Task> history(){
-        ArrayList<Task> history = new ArrayList<>();
-        for (Integer id: historyOfViews) {
-            if(epicTasks.containsKey(id)){
-                history.add(epicTasks.get(id));
-            } else if (tasks.containsKey(id)) {
-                history.add(tasks.get(id));
-            } else if(subTasks.containsKey(id)){
-                history.add(subTasks.get(id));
-            }
+    public List<Task> getHistory(){
+        return taskList.getTasks();
+    }
+    @Override
+    public void add(Task task){
+        if(task == null){
+            return;
         }
-        return history;
+        if(historyOfViews.containsKey(task.getId())){
+            taskList.removeNode(task);
+        }
+        taskList.linkLast(task);
+        historyOfViews.put(task.getId(), taskList.getLast());
+    }
+    @Override
+    public void remove(int taskId){
+        if(historyOfViews.containsKey(taskId)){
+            taskList.removeNode(historyOfViews.get(taskId).data);
+            historyOfViews.remove(taskId);
+        }
     }
     public void checkEpicState(int id){
         EpicTask epic = (EpicTask) getById("EpicTask", id);
@@ -166,5 +177,76 @@ public class InMemoryTaskManager implements TaskManager {
         epic.setState(Task.Status.values()[epicState]);
         update(epic, id);
     }
+    static class LinkedTaskList<T>{
+        private Node<T> head;
+        private Node<T> tail;
+        private int size;
 
+        public void linkLast(T element){
+            final Node<T> oldTail = tail;
+            final Node<T> newNode = new Node<>(tail, element, null);
+            tail = newNode;
+            if(oldTail == null){
+                head = newNode;
+            }
+            else{
+                oldTail.next = newNode;
+            }
+            size++;
+        }
+
+        public Node<T> getLast(){
+            return tail;
+        }
+        public List<T> getTasks(){
+            ArrayList<T> result = new ArrayList<>();
+            if(head == null){
+                return result;
+            }
+            Node<T> checkHead = head;
+            for(int i = 0; i < size; i++){
+                result.add(checkHead.data);
+                checkHead = checkHead.next;
+            }
+            return result;
+        }
+
+        public void removeNode(T element){
+            if(head == null){
+                return;
+            }
+            Node<T> checkHead = head;
+            while(element != checkHead.data){
+                checkHead = checkHead.next;
+            }
+            if(tail == head){
+                tail = null;
+                head = null;
+                size--;
+                return;
+            }
+            if(checkHead.prev != null){
+                if(checkHead.next == null){
+                    checkHead.prev.next = null;
+                    tail = checkHead.prev;
+                    head = checkHead.prev;
+                }
+                else{
+                    checkHead.prev.next = checkHead.next;
+                }
+            }
+
+            if(checkHead.next != null){
+                if(checkHead.prev == null){
+                    checkHead.next.prev = null;
+                    tail = checkHead.next;
+                    head = checkHead.next;
+                }
+                else{
+                    checkHead.next.prev = checkHead.prev;
+                }
+            }
+            size--;
+        }
+    }
 }
